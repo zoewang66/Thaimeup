@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<section class="shadow-sm mb-5 mt-5">  
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>User Login</h1>
+                <p>
+                    Thank you for returning to Thai Me Up. Please provide
+                    your login details to access your account. 
+                    If you do not have an account, please 
+                    <a href="{{ url_for('main.register') }}">
+                        register first
+                    </a>    
+                    .
+                </p>
+            </div>
+        </div>
+        <div class="row mt-4 justify-content-center p-3">
+            <div class="col-md-6">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control") }}
+                    </div>
+
+                    {{ form.submit(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
