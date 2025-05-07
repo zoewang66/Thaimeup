@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<section class="shadow-sm mb-5 mt-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 text-center">
+        <h1 class="mb-4">You’ve Been Logged Out</h1>
+        <p class="lead mb-4">
+          Your session has ended successfully. We hope to see you again soon!
+        </p>
+        <div class="d-flex justify-content-center gap-2">
+          <a href="{{ url_for('main.login') }}" class="btn btn-primary">
+            Log In
+          </a>
+          <a href="{{ url_for('main.register') }}" class="btn btn-outline-secondary">
+            Register
+          </a>
+          <a href="{{ url_for('main.index') }}" class="btn btn-link">
+            Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

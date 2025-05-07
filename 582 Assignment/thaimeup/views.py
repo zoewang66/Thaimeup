@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, session, flash
 from flask import redirect, url_for
+from thaimeup.db import get_user_by_username
+from functools import wraps
 
 from thaimeup.db import add_order, get_orders, check_for_user, add_user
 from thaimeup.db import get_cities, get_city, get_tours_for_city, get_items, get_item
@@ -108,12 +110,18 @@ def login():
             # Store user information in the session
             session['username'] = user.username
             session['logged_in'] = True
-            flash('Login successful!')
+            flash('Login successful!', 'success')
             return redirect(url_for('main.index'))
 
     return render_template('login.html', form = form)
 
-
+@bp.route('/logout/')
+def logout():
+    """Clear session and show logout confirmation."""
+    session.clear()
+    flash('You have been logged out.', 'success')
+    
+    return render_template('logout.html')
 @bp.route('/register/', methods = ['POST', 'GET'])
 def register():
     form = RegisterForm()
@@ -121,19 +129,16 @@ def register():
 
         if form.validate_on_submit():
 
-            # Check if the user already exists
-            user = check_for_user(
-                form.username.data, form.password.data
-            )
-            if user:
-                flash('User already exists', 'error')
-                return redirect(url_for('main.register'))
+           # check by username only
+            if get_user_by_username(form.username.data):
+                 flash('Username already exists', 'error')
+                 return redirect(url_for('main.register'))
 
             # Store user information in the database
             add_user(
                 form
             )
-            flash('Registration successful!')
+            flash('Registration successful!', 'success')
             return redirect(url_for('main.login'))
 
     return render_template('register.html', form = form)

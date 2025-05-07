@@ -1,4 +1,4 @@
-
+from werkzeug.security import generate_password_hash, check_password_hash
 from thaimeup.models import City, Tour, Order, OrderStatus, UserInfo, Item
 from thaimeup.models import UserAccount
 from datetime import datetime
@@ -136,21 +136,34 @@ def get_order(order_id):
     return None  # or raise an exception if preferred
 
 def check_for_user(username, password):
-    """Check if the username and password are valid."""
+    """Return the UserAccount if username exists and password matches."""
     for user in Users:
-        # never store passwords in plain text in production code
-        # this is just for demonstration purposes
-        if user.username == username and user.password == password:
+        if user.username == username and check_password_hash(user.password, password):
             return user
-    return None  # or raise an exception if preferred
+    return None
+
+def get_user_by_username(username):
+    """Return the UserAccount if the username is already taken."""
+    for user in Users:
+        if user.username == username:
+            return user
+    return None
 
 def add_user(form):
     """Add a new user."""
+    # hash the password before storing
+    hashed = generate_password_hash(form.password.data)
     Users.append(
-        UserAccount(form.username.data, form.password.data, form.email.data,
-            UserInfo(f'U{len(Users)}', 
-                     form.firstname.data, form.surname.data , 
-                     form.email.data, form.phone.data
-                    )
+        UserAccount(
+            form.username.data,
+            hashed,
+            form.email.data,
+            UserInfo(
+                f'U{len(Users)}',
+                form.firstname.data,
+                form.surname.data,
+                form.email.data,
+                form.phone.data
+            )
         )
     )
